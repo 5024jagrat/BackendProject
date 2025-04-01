@@ -6,14 +6,15 @@ dotenv.config({
   path: "./env",
 });
 
-const app = express();
-const port = process.env.PORT || 8000;
+// dotenv.config();
+// const app = express();
+// const port = process.env.PORT || 8000;
 
 connectDB();
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 /*
 const app = express()(
   // ()() //  iffis if kisi function ko immediately excute krwana hai.
