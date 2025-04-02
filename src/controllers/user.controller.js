@@ -6,7 +6,7 @@ const registerUser = asyncHandler(async (req, res) => {
    console.log("Register route hit"); // Debugging
     
    res.status(200).json({
-    message: "ok",
+    message: "Jagrat backend",
   });
 });
 // method to bana dia maga execute jab hoga jab koi url hit hoga.
