@@ -18,21 +18,29 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
     //file has been uploaded successfully
-    console.log("File is uploaded on cloudinary",response.url);
+    console.log("File is uploaded on cloudinary", response.url);
+    fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {
-    fs.unlinkSync(localFilePath); // Remove the locally saved temporary file as the upload operation got failed
+    console.log("Error uploading file", Error);
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath); // Remove the locally saved temporary file as the upload operation got failed
+    }
+
     return null;
   }
 };
-cloudinary.v2.uploader.upload(
-  "https://media.istockphoto.com/id/1336646871/photo/teenagers-practicing-soccer-in-sports-field.jpg?s=1024x1024&w=is&k=20&c=OfkE69sW5uFcSv9H2bo7jfXIAfon-xPJd1vt23K6W5M=",
-  {
-    public_id: "football_picture",
-  },
-  function (error, result) {
-    console.log(result);
-  }
-);
+
+// cloudinary.v2.uploader.upload(
+//   "https://media.istockphoto.com/id/1336646871/photo/teenagers-practicing-soccer-in-sports-field.jpg?s=1024x1024&w=is&k=20&c=OfkE69sW5uFcSv9H2bo7jfXIAfon-xPJd1vt23K6W5M=",
+//   {
+//     public_id: "football_picture",
+//   },
+//   function (error, result) {
+//     console.log(result);
+//   }
+// );
 
 // https://media.istockphoto.com/id/1336646871/photo/teenagers-practicing-soccer-in-sports-field.jpg?s=1024x1024&w=is&k=20&c=OfkE69sW5uFcSv9H2bo7jfXIAfon-xPJd1vt23K6W5M=
+
+export { uploadOnCloudinary };
