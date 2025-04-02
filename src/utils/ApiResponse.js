@@ -1,10 +1,10 @@
-class ApiResponse{
-    constructor(statusCode,data,message = "Success"){
-        this.statusCode = statusCode
-        this.data = data
-        this.message = message
-        this.success = statusCode<400 // if koi error h toh API error ke through jaye.
-    }
+class ApiResponse {
+  constructor(statusCode, data, message = "Success") {
+    this.statusCode = statusCode;
+    this.data = data;
+    this.message = message;
+    this.success = statusCode < 400; // if koi error h toh API error ke through jaye.
+  }
 }
 
 // 500-599 Server not response.
@@ -16,4 +16,3 @@ class ApiResponse{
 //Successfull responses 200-299
 
 //informational responses-100-199
-
