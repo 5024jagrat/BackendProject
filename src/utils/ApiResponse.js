@@ -7,6 +7,8 @@ class ApiResponse {
   }
 }
 
+export { ApiResponse };
+
 // 500-599 Server not response.
 
 // 400-499 Client error responses.
