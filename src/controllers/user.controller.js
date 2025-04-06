@@ -15,6 +15,20 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // });
 // method to bana dia maga execute jab hoga jab koi url hit hoga.
 
+const generateAcessAndRefreshtokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Something went wrong while generating tokens");
+  }
+};
+
 const registerUser = asyncHandler(async (req, res) => {
   // get user details from frontend
   // validation - not empty
@@ -44,7 +58,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   console.log("BODY:", req.body);
   console.log("FILES:", req.files);
-
 
   const avatarLocalPath = req.files?.avatar[0]?.path;
   const coverImageLocalPath = req.files?.coverImage[0]?.path;
@@ -91,4 +104,92 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, createdUser, "User Registered succesfully"));
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res) => {
+  // req body ->data
+  // username or email
+  // find the user
+  // check if user is there or not otherwise create new user
+  //check password
+  // access and refreshtoken
+  // send cookies which is secure
+  // this is the algo
+
+  const { email, username, password } = req.body;
+
+  if (!username || !email) {
+    throw new ApiError(400, "Username or email is required for login");
+  }
+
+  // find user:
+
+  const user = User.findOne({
+    $or: [{ username }, { email }], // we can use operators to find multiple things at the same time.
+  });
+
+  if (!user) {
+    throw new ApiError(404, "User does not exist!");
+  }
+
+  const isPasswordValid = await user.isPasswordCorrect(password);
+
+  if (!isPasswordValid) {
+    throw new ApiError(401, "Invalid user credentials");
+  }
+
+  const { accessToken, refreshToken } = await generateAcessAndRefreshtokens(
+    user._id
+  );
+
+  //sent in cookies.
+  //what information is to send to the user.
+
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshtoken"
+  );
+
+  const options = {
+    httpOnly: true, // cookies sirf server se modify ho skti hai
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refereshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in Successfully"
+      )
+    );
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
+
+export { registerUser, loginUser, logoutUser };
