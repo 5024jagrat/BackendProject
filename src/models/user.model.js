@@ -1,8 +1,8 @@
 // scehma and model define krege various properties ko use krke.
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
-
 import bcrypt from "bcrypt"; //  used for hash or encryption.
+
 const userSchema = new Schema(
   {
     username: {
