@@ -117,12 +117,14 @@ const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
 
   if (!username || !email) {
-    throw new ApiError(400, "Username or email is required for login");
+    if (!username && !email) {
+      throw new ApiError(400, "Username or email is required for login");
+    }
   }
 
   // find user:
 
-  const user = User.findOne({
+  const user = await User.findOne({
     $or: [{ username }, { email }], // we can use operators to find multiple things at the same time.
   });
 
@@ -155,7 +157,7 @@ const loginUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
-    .cookie("refereshToken", refreshToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
       new ApiResponse(
         200,
