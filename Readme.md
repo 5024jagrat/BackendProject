@@ -19,13 +19,3 @@ A simple backend server built using **Node.js** and **Express.js**.
 ## 📁 Project Structure
 
 BackendProject/ ├── src/ │ ├── controllers/ # Logic for API requests │ ├── models/ # Database models (if any) │ ├── routes/ # API endpoints │ └── app.js # Express app setup ├── .env # Environment variables ├── .gitignore ├── package.json └── README.md
-
-
-## 📦 Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/5024jagrat/BackendProject.git
-cd BackendProject
-
-
